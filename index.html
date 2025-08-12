@@ -6,6 +6,35 @@
 <title>Life Span Time Calculator — Full Features</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
+  body.dark { background: #1e1e1e; color: #e0e0e0; }
+  body.dark table { background: #2c2c2c; color: #e0e0e0; }
+  body.dark th { background: #005fa3; }
+  body.dark .total-row { background: #a68e00; }
+
+  body.sepia { background: #f4ecd8; color: #5b4636; }
+  body.sepia table { background: #fef9f1; color: #5b4636; }
+  body.sepia th { background: #c49a6c; }
+  body.sepia .total-row { background: #e6d2b5; }
+
+  body.high-contrast { background: black; color: yellow; }
+  body.high-contrast table { background: black; color: yellow; border: 2px solid yellow; }
+  body.high-contrast th { background: yellow; color: black; }
+  body.high-contrast .total-row { background: yellow; color: black; }
+
+  /* Theme Button */
+  #themeBtn {
+    display: block;
+    margin: 1 auto 5px;
+    padding: 4px 5px;
+    border: none;
+    background: #007acc;
+    color: rgb(234, 197, 197);
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background 0.3s;
+  }
+  #themeBtn:hover { background: #005fa3; }
   :root{
     --bg:#0b1020; --card:#0f1726; --muted:#9fb0d6; --accent:#6c7cff; --accent-2:#3de0c3;
     --glass: rgba(255,255,255,0.03);
@@ -13,7 +42,7 @@
     color-scheme: dark;
   }
   :root.light{
-    --bg:#f5f8ff; --card:#ffffff; --muted:#52637f; --accent:#4b62ff; --accent-2:#00bfa6;
+    --bg:#1450da; --card:#ffffff; --muted:#52637f; --accent:#4b62ff; --accent-2:#00bfa6;
     --glass: rgba(2,6,23,0.03);
     color-scheme: light;
   }
@@ -89,7 +118,7 @@
       </div>
 
       <div class="theme-toggle card" style="padding:8px;display:flex;gap:8px;align-items:center">
-        <label class="toggle small-muted">Theme</label>
+        <label class="toggle small-muted"></label>
         <button id="themeBtn" class="small ghost">Toggle</button>
       </div>
     </div>
@@ -242,6 +271,7 @@
 </div>
 
 <script>
+  
 /* Full-feature Live Life Span Calculator
    - Live updates with debounce
    - Animated totals counter (requestAnimationFrame)
@@ -779,6 +809,7 @@ $("newOcc").addEventListener("keydown", (e)=>{ if(e.key === "Enter") $("addBtn")
 window.addEventListener("beforeunload", ()=> saveState());
 
 /* done */
+
 </script>
 </body>
 </html>
