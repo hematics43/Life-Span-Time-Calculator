@@ -3,215 +3,257 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Life Span Time Calculator — Live Units</title>
+<title>Life Span Time Calculator — Full Features</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
   :root{
-    --bg:#071026; --card:#071829; --accent:#6c5ce7; --muted:#9fb0d6;
-    --glass: rgba(255,255,255,0.02);
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --bg:#0b1020; --card:#0f1726; --muted:#9fb0d6; --accent:#6c7cff; --accent-2:#3de0c3;
+    --glass: rgba(255,255,255,0.03);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color-scheme: dark;
+  }
+  :root.light{
+    --bg:#f5f8ff; --card:#ffffff; --muted:#52637f; --accent:#4b62ff; --accent-2:#00bfa6;
+    --glass: rgba(2,6,23,0.03);
+    color-scheme: light;
   }
   *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
   body{
-    margin:0;padding:20px;background:
+    background:
       radial-gradient(800px 400px at 10% 10%, rgba(108,92,231,0.06), transparent 6%),
-      linear-gradient(180deg,#041026 0%, #07102a 100%);
-    color:#e9f2ff;
-    -webkit-font-smoothing:antialiased;
+      linear-gradient(180deg,var(--bg) 0%, #07102a 100%);
+    color: #eaf0ff;
+    font-size:14px;padding:20px;
   }
   .wrap{max-width:1200px;margin:0 auto}
-  header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
   h1{margin:0;font-size:20px}
-  p.lead{margin:0;color:var(--muted);font-size:13px}
-  .live-badge{display:flex;flex-direction:column;align-items:flex-end;font-size:13px;color:var(--muted)}
-  .card{background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.01));border-radius:12px;padding:14px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+  .lead{margin:0;color:var(--muted);font-size:13px}
+  .card{
+    background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.005));
+    padding:12px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.5);
+  }
   .grid{display:grid;grid-template-columns:1fr 380px;gap:16px}
   table{width:100%;border-collapse:collapse;font-size:13px}
-  th,td{padding:8px 8px;text-align:left;vertical-align:middle}
-  th{color:var(--muted);font-size:12px;position:sticky;top:0;background:rgba(0,0,0,0.0);z-index:2}
-  thead th{border-bottom:1px solid rgba(255,255,255,0.03)}
-  tbody tr + tr td{border-top:1px solid rgba(255,255,255,0.02)}
-  input[type="number"], input[type="text"]{
-    width:100%;background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px;border-radius:6px;color:inherit;
+  th,td{padding:7px 8px;text-align:left;vertical-align:middle}
+  th{color:var(--muted);font-weight:700;font-size:12px}
+  thead th{position:sticky;top:0;background:transparent}
+  input[type="number"], input[type="text"], select{
+    width:100%;background:transparent;border:1px solid rgba(255,255,255,0.03);padding:7px;border-radius:8px;color:inherit;
   }
+  input[type="checkbox"]{transform:scale(1.05)}
   button{background:linear-gradient(180deg,var(--accent), #4e3be0);border:none;color:white;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:700}
-  button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);box-shadow:none}
+  button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
   .small{padding:6px 8px;font-size:13px}
-  .muted{color:var(--muted);font-size:12px}
+  .muted{color:var(--muted);font-size:13px}
   .controls{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-top:10px}
-  .panel{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
-  .stat{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01)}
-  .result-scroll{max-height:420px;overflow:auto;margin-top:8px;border-radius:6px}
   .add-row{display:flex;gap:8px;align-items:center;margin-top:8px}
-  @media (max-width:1000px){ .grid{grid-template-columns:1fr} thead th:nth-child(n+6){display:none} tbody td:nth-child(n+6){display:none} }
+  .panel{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+  .stat{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:8px;background:rgba(255,255,255,0.01);margin-bottom:10px}
+  .result-scroll{max-height:380px;overflow:auto;border-radius:6px}
+  .preset-toggle{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .theme-toggle{display:flex;gap:8px;align-items:center}
+  .bar-wrap{height:180px;padding:10px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
   footer{margin-top:12px;color:var(--muted);font-size:12px;text-align:center}
-  .tiny{font-size:12px;padding:6px 8px}
-  .removeBtn{background:transparent;border:0;color:#ff8b8b;font-weight:800;cursor:pointer}
-  .nowrap{white-space:nowrap}
+  .pill{padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.02);font-weight:700}
+  .live-dot{width:10px;height:10px;border-radius:999px;background:#35d07f;box-shadow:0 0 6px rgba(53,208,127,0.25)}
+  @media (max-width:1000px){
+    .grid{grid-template-columns:1fr}
+    .bar-wrap{height:140px}
+  }
+  /* small numeric styles */
+  .num-small{font-variant-numeric: tabular-nums; font-weight:700}
+  .removeBtn{background:transparent;border:0;color:#ff7f7f;font-weight:800;cursor:pointer;border-radius:6px;padding:4px}
+  .chart-canvas{width:100%;height:100%}
+  .highlight{background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .toggle{display:inline-flex;align-items:center;gap:8px}
+  .separator{height:1px;background:rgba(255,255,255,0.03);margin:10px 0;border-radius:2px}
+  .small-muted{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div>
-      <h1>Life Span Time Calculator — Live (all units)</h1>
-      <p class="lead">As you edit any field results update automatically. All units shown: seconds, minutes, hours, days, years.</p>
+      <h1>Life Span Time Calculator — <span class="small-muted">Full Features</span></h1>
+      <p class="lead">Live, animated totals, units in sec/min/hr/day/years, presets, chart, CSV, dark/light mode.</p>
     </div>
-    <div class="live-badge">
-      <div style="display:flex;gap:8px;align-items:center">
-        <div style="width:10px;height:10px;border-radius:999px;background:#35d07f;box-shadow:0 0 6px rgba(53,208,127,0.25)"></div>
-        <div style="font-weight:700">Live</div>
+
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="display:flex;flex-direction:column;align-items:flex-end">
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="live-dot" aria-hidden="true"></div><div class="muted">Live</div>
+        </div>
+        <div id="lastUpdated" class="muted small-muted" style="margin-top:6px">—</div>
       </div>
-      <div id="lastUpdated" class="muted">—</div>
+
+      <div class="theme-toggle card" style="padding:8px;display:flex;gap:8px;align-items:center">
+        <label class="toggle small-muted">Theme</label>
+        <button id="themeBtn" class="small ghost">Toggle</button>
+      </div>
     </div>
   </header>
 
   <div class="grid">
-    <!-- LEFT: Activities -->
+    <!-- LEFT: activities table -->
     <div class="card">
-      <div style="overflow:auto">
-        <table aria-label="activities breakdown">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="muted">Activities (edit inline) — minutes per occurrence and occurrences per day</div>
+        <div style="display:flex;gap:8px">
+          <button id="exportCsv" class="small ghost">Export CSV</button>
+          <button id="resetBtn" class="small">Reset</button>
+        </div>
+      </div>
+
+      <div class="result-scroll">
+        <table aria-label="Activities table">
           <thead>
             <tr>
-              <th style="width:18%">Activity</th>
-              <th style="width:8%">mins/occ</th>
-              <th style="width:8%">occ/day</th>
+              <th style="width:20%">Activity</th>
+              <th style="width:9%">mins/occ</th>
+              <th style="width:9%">occ/day</th>
               <th style="width:9%">sec/yr</th>
               <th style="width:9%">min/yr</th>
               <th style="width:8%">hr/yr</th>
               <th style="width:8%">day/yr</th>
               <th style="width:8%">yrs/yr</th>
-              <th style="width:8%">yrs left</th>
+              <th style="width:9%">yrs left</th>
               <th style="width:6%">% left</th>
-              <th style="width:6%">remove</th>
+              <th style="width:4%">✕</th>
             </tr>
           </thead>
           <tbody id="tbodyActivities"></tbody>
         </table>
       </div>
 
-      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:12px">
-        <div class="add-row" style="flex:1">
-          <input id="newName" placeholder="New activity name (e.g. Brush teeth)" type="text" style="width:220px" />
-          <input id="newMinutes" type="number" min="0" step="0.1" placeholder="mins" style="width:90px" />
-          <input id="newOcc" type="number" min="0" step="0.01" placeholder="/day" style="width:90px" />
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+        <div class="add-row">
+          <input id="newName" placeholder="New activity (e.g. Brush teeth)" type="text" style="width:240px" />
+          <input id="newMinutes" type="number" min="0" step="0.1" placeholder="mins" style="width:88px" />
+          <input id="newOcc" type="number" min="0" step="0.01" placeholder="/day" style="width:88px" />
           <button id="addBtn" class="tiny">Add</button>
         </div>
-        <div style="text-align:right">
-          <div class="muted">Tip: fractional minutes allowed (e.g. 2.5)</div>
+
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;flex-direction:column">
+            <label class="muted small-muted">Age / Expected life</label>
+            <div style="display:flex;gap:8px">
+              <input id="ageInput" type="number" min="0" step="1" value="28" style="width:72px" />
+              <input id="expectInput" type="number" min="1" step="1" value="85" style="width:72px" />
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="controls">
+      <div class="separator"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
         <div>
-          <label class="muted">Current age</label>
-          <input id="ageInput" type="number" min="0" step="1" value="28" />
+          <div class="muted">Presets</div>
+          <div class="preset-toggle" style="margin-top:6px">
+            <label><input id="presetSleep" type="checkbox" /> Sleep (preset)</label>
+            <label><input id="presetWork" type="checkbox" /> Work (preset)</label>
+            <button id="applyPresets" class="small ghost" style="margin-left:8px">Apply</button>
+          </div>
         </div>
-        <div>
-          <label class="muted">Expected lifespan</label>
-          <input id="expectInput" type="number" min="1" step="1" value="85" />
-        </div>
-        <div style="margin-left:auto;display:flex;gap:8px">
-          <button id="exportCsv" class="small ghost">Export CSV</button>
-          <button id="resetBtn" class="small">Reset</button>
+
+        <div style="text-align:right">
+          <div class="muted">Autosave: <span id="autosaveState" class="small-muted">on</span></div>
+          <div class="muted small-muted">Live seconds counter below</div>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: Totals & breakdown -->
+    <!-- RIGHT: totals, counters, chart -->
     <aside class="card panel">
+      <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+        <div>
+          <div class="muted">Totals per year</div>
+          <div style="display:flex;gap:8px;align-items:baseline">
+            <div class="num-small highlight" id="animTotalYear">—</div>
+            <div class="muted">yrs/year</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="muted small-muted">Years over remaining life</div>
+          <div style="font-weight:800;font-size:16px" id="totalYearsRemaining">—</div>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
       <div class="stat">
         <div>
-          <div class="muted">Total seconds per year</div>
-          <strong id="totalSecYear">—</strong>
+          <div class="muted">Seconds / year</div>
+          <div class="num-small" id="totalSecYear">—</div>
         </div>
-        <div class="muted nowrap">sec / year</div>
+        <div>
+          <div class="muted">Minutes / year</div>
+          <div class="num-small" id="totalMinYear">—</div>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div>
+          <div class="muted">Hours / year</div>
+          <div class="num-small" id="totalHrYear">—</div>
+        </div>
+        <div>
+          <div class="muted">Days / year</div>
+          <div class="num-small" id="totalDayYear">—</div>
+        </div>
+      </div>
+
+      <div class="stat" style="align-items:flex-start">
+        <div style="flex:1">
+          <div class="muted">Live seconds spent today (total)</div>
+          <div style="font-weight:800;font-size:18px" id="liveSecondsTodayTotal">—</div>
+        </div>
+        <div style="flex:1">
+          <div class="muted">Selected activity (live seconds today)</div>
+          <div style="font-weight:800;font-size:18px" id="liveSecondsTodayActivity">—</div>
+        </div>
       </div>
 
       <div style="height:8px"></div>
 
-      <div class="stat">
-        <div>
-          <div class="muted">Total minutes per year</div>
-          <strong id="totalMinYear">—</strong>
-        </div>
-        <div class="muted nowrap">min / year</div>
-      </div>
-
+      <div class="muted">Years over remaining life — comparison</div>
       <div style="height:8px"></div>
-
-      <div class="stat">
-        <div>
-          <div class="muted">Total hours per year</div>
-          <strong id="totalHrYear">—</strong>
-        </div>
-        <div class="muted nowrap">hr / year</div>
-      </div>
-
-      <div style="height:8px"></div>
-
-      <div class="stat">
-        <div>
-          <div class="muted">Total days per year</div>
-          <strong id="totalDayYear">—</strong>
-        </div>
-        <div class="muted nowrap">day / year</div>
-      </div>
-
-      <div style="height:8px"></div>
-
-      <div class="stat">
-        <div>
-          <div class="muted">Total years per year</div>
-          <strong id="totalYearYear">—</strong>
-        </div>
-        <div class="muted nowrap">yrs / year</div>
-      </div>
-
-      <div style="height:14px"></div>
-
-      <div class="muted">Totals over remaining life</div>
-      <div style="height:8px"></div>
-      <div class="stat">
-        <div>
-          <div class="muted">Years over remaining life</div>
-          <strong id="totalYearsRemaining">—</strong>
-        </div>
-        <div class="muted">% of remaining life</div>
+      <div class="bar-wrap" id="chartWrap">
+        <canvas id="barChart" class="chart-canvas" width="800" height="360" aria-label="Years remaining chart"></canvas>
       </div>
 
       <div style="height:10px"></div>
-      <div class="muted">Per-activity breakdown (in years/year and years remaining)</div>
-      <div class="result-scroll">
-        <table style="width:100%;margin-top:8px">
-          <thead>
-            <tr><th>Activity</th><th>yrs/yr</th><th>yrs left</th><th>% left</th></tr>
-          </thead>
+
+      <div class="muted">Per-activity summary</div>
+      <div style="height:8px"></div>
+      <div style="max-height:120px;overflow:auto">
+        <table style="width:100%">
+          <thead><tr><th>Activity</th><th>yrs/yr</th><th>yrs left</th><th>% left</th></tr></thead>
           <tbody id="resultBody"></tbody>
         </table>
       </div>
+
     </aside>
   </div>
 
-  <footer>Live: edits save automatically to localStorage. Reset clears saved data. Built to help you see how small daily actions add up.</footer>
+  <footer>All features — live & polished. Want PDF export, printable report, or better charts (stacked)? Ask and I’ll add it.</footer>
 </div>
 
 <script>
-/* Live Life Span Calculator — full units
-   Units conversions:
-   - minutes per occurrence (m)
-   - occurrences per day (occ)
-   - seconds/year = m * occ * 60 * 365
-   - minutes/year = m * occ * 365
-   - hours/year = minutes/year / 60
-   - days/year = hours/year / 24
-   - years/year = days/year / 365  (equivalently minutes/year / (60*24*365))
+/* Full-feature Live Life Span Calculator
+   - Live updates with debounce
+   - Animated totals counter (requestAnimationFrame)
+   - Live seconds-today counters (total and for selected activity)
+   - Presets: Sleep & Work (toggleable)
+   - Chart: canvas bar chart showing years over remaining life
+   - Autosave to localStorage and theme toggle (dark/light)
 */
 
-const STORAGE_KEY = "live_units_life_calc_v1";
+const STORAGE_KEY = "life_span_full_v1";
 const MINUTES_PER_YEAR = 60 * 24 * 365; // 525600
 const SECONDS_PER_YEAR = MINUTES_PER_YEAR * 60; // 31,536,000
-const HOURS_PER_YEAR = 24 * 365; // 8760
-const DAYS_PER_YEAR = 365;
 
 const DEFAULT_ACTIVITIES = [
   {name:"Brush teeth", mins:3, occ:2},
@@ -222,38 +264,67 @@ const DEFAULT_ACTIVITIES = [
   {name:"Read / study", mins:30, occ:1}
 ];
 
-let state = loadState() || { activities: JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES)), age:28, expect:85 };
+const PRESET_SLEEP = [{name:"Sleep (preset)", mins:480, occ:1}]; // 8 hours = 480 mins/day
+const PRESET_WORK = [
+  {name:"Work (commute & work)", mins:8*60, occ:1} // 8 hours/day
+];
+
+let state = loadState() || {
+  activities: JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES)),
+  age: 28,
+  expect: 85,
+  presets: { sleep: false, work: false },
+  theme: "dark",
+  selectedActivityIndex: 0
+};
 
 function loadState(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return null;
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    // validate basic shape
+    if(!parsed.activities) parsed.activities = JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES));
+    return parsed;
   }catch(e){ return null; }
 }
 function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
 
 function $(id){ return document.getElementById(id); }
-function formatNumber(n, dec=2){ if(!isFinite(n)) return "0"; return Number(n).toLocaleString(undefined,{minimumFractionDigits:0, maximumFractionDigits:dec}); }
-function formatNumberFixed(n, dec=6){ if(!isFinite(n)) return "0"; return Number(n).toLocaleString(undefined,{minimumFractionDigits:dec, maximumFractionDigits:dec}); }
+function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+
+function formatNumber(n, dec=2){
+  if(!isFinite(n)) return "0";
+  // keep many decimals but not trailing garbage
+  return Number(n).toLocaleString(undefined, {minimumFractionDigits:0, maximumFractionDigits:dec});
+}
+function formatFixed(n, dec=6){ if(!isFinite(n)) return "0"; return Number(n).toLocaleString(undefined,{minimumFractionDigits:dec, maximumFractionDigits:dec}); }
 
 function calcValsPerYear(act){
-  // careful numeric conversions
   const m = Number(act.mins) || 0;
   const occ = Number(act.occ) || 0;
   const minutesYear = m * occ * 365;
   const secondsYear = minutesYear * 60;
   const hoursYear = minutesYear / 60;
   const daysYear = hoursYear / 24;
-  const yearsYear = minutesYear / MINUTES_PER_YEAR; // same as daysYear / 365
+  const yearsYear = minutesYear / MINUTES_PER_YEAR; // or daysYear/365
   return { secondsYear, minutesYear, hoursYear, daysYear, yearsYear };
 }
 
-/* render activities table */
+/* Prepare the combined list including presets when toggled */
+function getActiveActivities(){
+  let base = state.activities.slice();
+  if(state.presets.sleep) base = base.concat(PRESET_SLEEP);
+  if(state.presets.work) base = base.concat(PRESET_WORK);
+  return base;
+}
+
+/* RENDERING */
 function renderActivities(){
   const tbody = $("tbodyActivities");
   tbody.innerHTML = "";
-  state.activities.forEach((act, i) => {
+  // show only editable base activities (not presets)
+  state.activities.forEach((act,i)=>{
     const vals = calcValsPerYear(act);
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -279,32 +350,26 @@ function renderActivities(){
   document.querySelectorAll(".removeBtn").forEach(b => b.addEventListener("click", onRemoveRow));
 }
 
+/* escape (small) */
 function escapeHtml(s){ return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
 
+/* Input handlers */
 function onActChange(e){
   const i = Number(e.target.dataset.i);
-  const val = e.target.value;
   if(e.target.classList.contains("act-mins")){
-    state.activities[i].mins = val === "" ? 0 : Number(val);
+    state.activities[i].mins = e.target.value === "" ? 0 : Number(e.target.value);
   } else {
-    state.activities[i].occ = val === "" ? 0 : Number(val);
+    state.activities[i].occ = e.target.value === "" ? 0 : Number(e.target.value);
   }
-  // update the per-row quick numbers
+  // update quick readouts for that row
   const vals = calcValsPerYear(state.activities[i]);
-  const secCell = document.querySelector('.sec-year[data-i="'+i+'"]');
-  const minCell = document.querySelector('.min-year[data-i="'+i+'"]');
-  const hrCell = document.querySelector('.hr-year[data-i="'+i+'"]');
-  const dayCell = document.querySelector('.day-year[data-i="'+i+'"]');
-  const yrsCell = document.querySelector('.yrs-year[data-i="'+i+'"]');
-  if(secCell) secCell.textContent = formatNumber(vals.secondsYear,0);
-  if(minCell) minCell.textContent = formatNumber(vals.minutesYear,1);
-  if(hrCell) hrCell.textContent = formatNumber(vals.hoursYear,3);
-  if(dayCell) dayCell.textContent = formatNumber(vals.daysYear,4);
-  if(yrsCell) yrsCell.textContent = formatNumber(vals.yearsYear,6);
-
+  document.querySelector('.sec-year[data-i="'+i+'"]').textContent = formatNumber(vals.secondsYear,0);
+  document.querySelector('.min-year[data-i="'+i+'"]').textContent = formatNumber(vals.minutesYear,1);
+  document.querySelector('.hr-year[data-i="'+i+'"]').textContent = formatNumber(vals.hoursYear,3);
+  document.querySelector('.day-year[data-i="'+i+'"]').textContent = formatNumber(vals.daysYear,4);
+  document.querySelector('.yrs-year[data-i="'+i+'"]').textContent = formatNumber(vals.yearsYear,6);
   scheduleCompute();
 }
-
 function onNameChange(e){
   const i = Number(e.target.dataset.i);
   state.activities[i].name = e.target.value;
@@ -317,7 +382,7 @@ function onRemoveRow(e){
   scheduleCompute();
 }
 
-/* add activity */
+/* Add new activity */
 $("addBtn").addEventListener("click", ()=>{
   const name = $("newName").value.trim() || "Custom activity";
   const mins = parseFloat($("newMinutes").value) || 0;
@@ -328,19 +393,27 @@ $("addBtn").addEventListener("click", ()=>{
   scheduleCompute();
 });
 
-/* age / expectancy inputs */
+/* age / expected inputs */
 $("ageInput").value = state.age;
 $("expectInput").value = state.expect;
-$("ageInput").addEventListener("input", (e)=>{ state.age = Number(e.target.value) || 0; scheduleCompute(); });
-$("expectInput").addEventListener("input", (e)=>{ state.expect = Number(e.target.value) || 0; scheduleCompute(); });
+$("ageInput").addEventListener("input", (e) => { state.age = Number(e.target.value) || 0; scheduleCompute(); });
+$("expectInput").addEventListener("input", (e) => { state.expect = Number(e.target.value) || 0; scheduleCompute(); });
+
+/* Preset toggles */
+$("presetSleep").checked = state.presets.sleep;
+$("presetWork").checked = state.presets.work;
+$("presetSleep").addEventListener("change", (e)=> { state.presets.sleep = e.target.checked; scheduleCompute(); });
+$("presetWork").addEventListener("change", (e)=> { state.presets.work = e.target.checked; scheduleCompute(); });
+$("applyPresets").addEventListener("click", ()=> { renderActivities(); scheduleCompute(); });
 
 /* CSV export */
-$("exportCsv").addEventListener("click", ()=>{
+$("exportCsv").addEventListener("click", ()=> {
+  const base = getActiveActivities();
   const age = Number(state.age) || 0;
   const expected = Number(state.expect) || 0;
   const yearsRemaining = Math.max(0, expected - age);
   let csv = "Activity,mins_per_occ,occ_per_day,sec_per_year,min_per_year,hr_per_year,day_per_year,yrs_per_year,yrs_over_remaining,pct_of_remaining\n";
-  state.activities.forEach(a=>{
+  base.forEach(a=>{
     const v = calcValsPerYear(a);
     const yrsOver = v.yearsYear * yearsRemaining;
     const pct = yearsRemaining>0 ? (yrsOver / yearsRemaining) * 100 : 0;
@@ -349,45 +422,92 @@ $("exportCsv").addEventListener("click", ()=>{
   const blob = new Blob([csv], {type:"text/csv"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url; a.download = "life_time_units.csv"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  a.href = url; a.download = "life_time_full.csv"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 });
 
-/* Reset */
-$("resetBtn").addEventListener("click", ()=>{
-  if(confirm("Reset to defaults and clear saved data?")){
-    state = { activities: JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES)), age:28, expect:85 };
-    saveState();
-    renderActivities();
-    $("ageInput").value = state.age;
-    $("expectInput").value = state.expect;
-    computeAll();
+/* Reset to defaults (clears localStorage) */
+$("resetBtn").addEventListener("click", ()=> {
+  if(!confirm("Reset to defaults and clear saved data?")) return;
+  state = {
+    activities: JSON.parse(JSON.stringify(DEFAULT_ACTIVITIES)),
+    age: 28,
+    expect: 85,
+    presets: { sleep: false, work: false },
+    theme: state.theme || "dark",
+    selectedActivityIndex: 0
+  };
+  saveState();
+  renderActivities();
+  applyTheme();
+  scheduleCompute();
+});
+
+/* Theme toggle */
+$("themeBtn").addEventListener("click", ()=> {
+  state.theme = (state.theme === "dark") ? "light" : "dark";
+  saveState();
+  applyTheme();
+});
+function applyTheme(){
+  if(state.theme === "light"){
+    document.documentElement.classList.add("light");
+    document.body.style.background = "linear-gradient(180deg,#f5f8ff 0%, #e8f0ff 100%)";
+  } else {
+    document.documentElement.classList.remove("light");
+    document.body.style.background = "radial-gradient(800px 400px at 10% 10%, rgba(108,92,231,0.06), transparent 6%), linear-gradient(180deg,var(--bg) 0%, #07102a 100%)";
   }
-});
+}
 
-/* Debounced live compute */
+/* Debounce compute */
 let computeTimer = null;
-const DEBOUNCE_MS = 220;
+const DEBOUNCE_MS = 180;
 function scheduleCompute(){
   if(computeTimer) clearTimeout(computeTimer);
   computeTimer = setTimeout(()=>{ computeAll(); computeTimer = null; }, DEBOUNCE_MS);
 }
 
-/* compute and render totals and per-activity left columns */
+/* Animated totals counter */
+let animatedValue = 0;
+let animationStart = null;
+let animationFrom = 0;
+let animationTo = 0;
+function animateTotal(toValue){
+  animationFrom = animatedValue;
+  animationTo = toValue;
+  animationStart = null;
+  requestAnimationFrame(stepAnim);
+}
+function stepAnim(ts){
+  if(animationStart === null) animationStart = ts;
+  const duration = 600;
+  const t = clamp((ts - animationStart) / duration, 0, 1);
+  // easeOutCubic
+  const eased = 1 - Math.pow(1 - t, 3);
+  animatedValue = animationFrom + (animationTo - animationFrom) * eased;
+  $("animTotalYear").textContent = formatNumber(animatedValue,6);
+  if(t < 1) requestAnimationFrame(stepAnim);
+}
+
+/* Live seconds-today counter
+   We'll approximate "today" seconds consumed by activities as:
+   (seconds per year / 365) * fraction of day passed.
+   Fraction of day passed = seconds since local midnight / 86400
+*/
+function secondsSinceMidnight(){
+  const now = new Date();
+  return now.getSeconds() + now.getMinutes()*60 + now.getHours()*3600 + now.getMilliseconds()/1000;
+}
+
 function computeAll(){
   saveState();
-
+  const base = getActiveActivities();
   const age = Number(state.age) || 0;
   const expected = Number(state.expect) || 0;
   const yearsRemaining = Math.max(0, expected - age);
 
   // totals
-  let totalSecYear = 0;
-  let totalMinYear = 0;
-  let totalHrYear = 0;
-  let totalDayYear = 0;
-  let totalYearYear = 0;
-
-  state.activities.forEach(a=>{
+  let totalSecYear = 0, totalMinYear = 0, totalHrYear = 0, totalDayYear = 0, totalYearYear = 0;
+  base.forEach(a=>{
     const v = calcValsPerYear(a);
     totalSecYear += v.secondsYear;
     totalMinYear += v.minutesYear;
@@ -397,51 +517,268 @@ function computeAll(){
   });
 
   const totalYearsRemaining = totalYearYear * yearsRemaining;
-  const percentOfRemainingLife = yearsRemaining > 0 ? (totalYearYear * 100) : 0;
+  const percentOfRemaining = yearsRemaining > 0 ? (totalYearYear * 100) : 0;
 
-  // update totals panel
+  // update totals (animated)
+  animateTotal(totalYearYear);
+
   $("totalSecYear").textContent = formatNumber(totalSecYear,0);
   $("totalMinYear").textContent = formatNumber(totalMinYear,1);
   $("totalHrYear").textContent = formatNumber(totalHrYear,3);
   $("totalDayYear").textContent = formatNumber(totalDayYear,4);
-  $("totalYearYear").textContent = formatNumber(totalYearYear,6);
   $("totalYearsRemaining").textContent = formatNumber(totalYearsRemaining,6) + " yrs";
-  // also update small percent label in totals section
-  // (we already show percent label in panel heading)
-  // update per-activity yrs-left and pct-left
-  state.activities.forEach((a,i)=>{
-    const v = calcValsPerYear(a);
+
+  // per-activity yrs left and pct
+  // the displayed activities table is base editable ones; but we must compute for base + presets. We'll map yrs-left/pct for displayed rows.
+  // compute for combined list and chart
+  const combined = base;
+  // update table cells for editable activities
+  state.activities.forEach((act, i) => {
+    const v = calcValsPerYear(act);
     const yrsLeft = v.yearsYear * yearsRemaining;
-    const pctLeft = yearsRemaining>0 ? (yrsLeft / yearsRemaining) * 100 : 0;
+    const pct = yearsRemaining > 0 ? (yrsLeft / yearsRemaining) * 100 : 0;
     const yrsLeftCell = document.querySelector('.yrs-left[data-i="'+i+'"]');
-    const pctLeftCell = document.querySelector('.pct-left[data-i="'+i+'"]');
+    const pctCell = document.querySelector('.pct-left[data-i="'+i+'"]');
     if(yrsLeftCell) yrsLeftCell.textContent = formatNumber(yrsLeft,6);
-    if(pctLeftCell) pctLeftCell.textContent = formatNumber(pctLeft,4) + "%";
+    if(pctCell) pctCell.textContent = formatNumber(pct,4) + "%";
   });
 
-  // update simplified per-activity summary on right panel
-  const resultBody = $("resultBody");
-  resultBody.innerHTML = "";
-  state.activities.forEach(a=>{
+  // update right panel summary table
+  const resultBody = $("resultBody"); resultBody.innerHTML = "";
+  combined.forEach(a => {
     const v = calcValsPerYear(a);
     const yrsLeft = v.yearsYear * yearsRemaining;
-    const pctLeft = yearsRemaining>0 ? (yrsLeft / yearsRemaining) * 100 : 0;
+    const pct = yearsRemaining > 0 ? (yrsLeft / yearsRemaining) * 100 : 0;
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${escapeHtml(a.name)}</td><td>${formatNumber(v.yearsYear,6)}</td><td>${formatNumber(yrsLeft,6)}</td><td>${formatNumber(pctLeft,4)}%</td>`;
+    tr.innerHTML = `<td>${escapeHtml(a.name)}</td><td>${formatNumber(v.yearsYear,6)}</td><td>${formatNumber(yrsLeft,6)}</td><td>${formatNumber(pct,4)}%</td>`;
     resultBody.appendChild(tr);
   });
 
-  // update last-updated timestamp
+  // update bar chart with top N activities by yrs over remaining life
+  drawChart(combined.map(a => {
+    const v = calcValsPerYear(a);
+    return {name: a.name, yrsOver: v.yearsYear * yearsRemaining};
+  }));
+
+  // update last updated timestamp
   $("lastUpdated").textContent = (new Date()).toLocaleString();
+
+  // live seconds-today: total and selected activity
+  updateLiveSeconds(base);
+}
+
+/* Chart (simple canvas bar chart) */
+const canvas = $("barChart");
+const ctx = canvas.getContext("2d");
+function drawChart(items){
+  // items: [{name, yrsOver},...]
+  // pick top 6 for readability
+  const sorted = items.slice().sort((a,b)=>b.yrsOver - a.yrsOver).slice(0,6);
+  const padding = 12;
+  const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+  const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+  ctx.clearRect(0,0,w,h);
+  // background
+  ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--card') || '#0f1726';
+  // title area unused to keep simple
+  const max = Math.max(1e-9, ...sorted.map(s=>s.yrsOver));
+  const barGap = 12 * devicePixelRatio;
+  const barWidth = (w - padding*2 - barGap*(sorted.length-1)) / Math.max(1, sorted.length);
+  // labels & bars
+  sorted.forEach((s, idx) => {
+    const x = padding*devicePixelRatio + idx * (barWidth + barGap);
+    const barH = (s.yrsOver / max) * (h - 40*devicePixelRatio);
+    const y = h - barH - 20*devicePixelRatio;
+    // gradient
+    const g = ctx.createLinearGradient(x, y, x, y + barH);
+    g.addColorStop(0, getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#6c7cff');
+    g.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue('--accent-2') || '#3de0c3');
+    ctx.fillStyle = g;
+    // rounded rect bar
+    roundRect(ctx, x, y, barWidth, barH, 6*devicePixelRatio, true, false);
+    // name label
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--muted') || '#9fb0d6';
+    ctx.font = `${10*devicePixelRatio}px Inter, Arial`;
+    const text = s.name.length > 18 ? s.name.slice(0,18) + "…" : s.name;
+    ctx.fillText(text, x, h - 6*devicePixelRatio);
+    // value label above bar
+    ctx.fillStyle = "#ffffff";
+    ctx.font = `${11*devicePixelRatio}px Inter, Arial`;
+    ctx.fillText(formatNumber(s.yrsOver,4), x, y - 6*devicePixelRatio);
+  });
+}
+function roundRect(ctx, x, y, w, h, r, fill, stroke){
+  if (typeof stroke === 'undefined') stroke = true;
+  if (typeof r === 'undefined') r = 5;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y,   x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x,   y + h, r);
+  ctx.arcTo(x,   y + h, x,   y,   r);
+  ctx.arcTo(x,   y,   x + w, y,   r);
+  ctx.closePath();
+  if (fill) ctx.fill();
+  if (stroke) ctx.stroke();
+}
+
+/* Live seconds today */
+let liveInterval = null;
+function updateLiveSeconds(activeList){
+  // activeList: array of activities currently included
+  // total seconds today from all activities = sum((sec/year)/365) * seconds_since_midnight
+  const secsSinceMid = secondsSinceMidnight();
+  const perDayFactor = secsSinceMid / 86400; // fraction of day passed
+  let totalSecondsToday = 0;
+  activeList.forEach(a=>{
+    const v = calcValsPerYear(a);
+    const secPerDay = v.secondsYear / 365;
+    totalSecondsToday += secPerDay * perDayFactor;
+  });
+  $("liveSecondsTodayTotal").textContent = Math.floor(totalSecondsToday) + " sec";
+  // selected activity: state.selectedActivityIndex (if in range in displayed base activities)
+  const selIdx = state.selectedActivityIndex || 0;
+  if(selIdx >= 0 && selIdx < state.activities.length){
+    const act = state.activities[selIdx];
+    const v = calcValsPerYear(act);
+    const secPerDay = v.secondsYear / 365;
+    const activitySecondsToday = secPerDay * perDayFactor;
+    $("liveSecondsTodayActivity").textContent = Math.floor(activitySecondsToday) + " sec";
+  } else {
+    $("liveSecondsTodayActivity").textContent = "—";
+  }
+  // schedule next tick in 1s
+  if(liveInterval) clearTimeout(liveInterval);
+  liveInterval = setTimeout(()=> updateLiveSeconds(activeList), 1000);
+}
+
+/* select first activity when clicking a row (for live-activity counter) */
+document.addEventListener("click", (e)=>{
+  const input = e.target.closest("input[data-i]");
+  if(input && input.classList.contains("act-name")){
+    state.selectedActivityIndex = Number(input.dataset.i);
+    saveState();
+  }
+});
+
+/* helper: seconds since midnight */
+function secondsSinceMidnight(){
+  const now = new Date();
+  return now.getSeconds() + now.getMinutes()*60 + now.getHours()*3600 + now.getMilliseconds()/1000;
 }
 
 /* initialization */
+function init(){
+  applyTheme();
+  renderActivities();
+  scheduleCompute();
+}
+applyTheme(); init();
+
+/* Animated value holder initialization */
+
+/* compute triggered by scheduleCompute */
+function computeAll(){
+  saveState();
+
+  const active = getActiveActivities();
+  const age = Number(state.age) || 0;
+  const expected = Number(state.expect) || 0;
+  const yearsRemaining = Math.max(0, expected - age);
+
+  // totals
+  let totalSecYear = 0, totalMinYear = 0, totalHrYear = 0, totalDayYear = 0, totalYearYear = 0;
+  active.forEach(a=>{
+    const v = calcValsPerYear(a);
+    totalSecYear += v.secondsYear;
+    totalMinYear += v.minutesYear;
+    totalHrYear += v.hoursYear;
+    totalDayYear += v.daysYear;
+    totalYearYear += v.yearsYear;
+  });
+
+  const totalYearsRemaining = totalYearYear * yearsRemaining;
+  $("totalYearsRemaining").textContent = formatNumber(totalYearsRemaining,6) + " yrs";
+
+  // update totals displays (non-animated)
+  $("totalSecYear").textContent = formatNumber(totalSecYear,0);
+  $("totalMinYear").textContent = formatNumber(totalMinYear,1);
+  $("totalHrYear").textContent = formatNumber(totalHrYear,3);
+  $("totalDayYear").textContent = formatNumber(totalDayYear,4);
+
+  // animate yrs/year
+  animateTotalYear(totalYearYear);
+
+  // update table yrs-left/pct-left for editable activities
+  state.activities.forEach((act, i) => {
+    const v = calcValsPerYear(act);
+    const yrsLeft = v.yearsYear * yearsRemaining;
+    const pct = yearsRemaining > 0 ? (yrsLeft / yearsRemaining) * 100 : 0;
+    const yrsLeftCell = document.querySelector('.yrs-left[data-i="'+i+'"]');
+    const pctLeftCell = document.querySelector('.pct-left[data-i="'+i+'"]');
+    if(yrsLeftCell) yrsLeftCell.textContent = formatNumber(yrsLeft,6);
+    if(pctLeftCell) pctLeftCell.textContent = formatNumber(pct,4) + "%";
+  });
+
+  // right panel summary + chart
+  const summaryList = active.map(a => {
+    const v = calcValsPerYear(a);
+    return {name: a.name, yrsYear: v.yearsYear, yrsLeft: v.yearsYear * yearsRemaining};
+  });
+  const resultBody = $("resultBody"); resultBody.innerHTML = "";
+  summaryList.forEach(s=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${escapeHtml(s.name)}</td><td>${formatNumber(s.yrsYear,6)}</td><td>${formatNumber(s.yrsLeft,6)}</td><td>${formatNumber((s.yrsLeft/Math.max(1,yearsRemaining))*100,3)}%</td>`;
+    resultBody.appendChild(tr);
+  });
+
+  // chart data
+  drawChart(summaryList.map(s => ({name: s.name, yrsOver: s.yrsLeft})));
+
+  // update last updated
+  $("lastUpdated").textContent = new Date().toLocaleString();
+
+  // live seconds counters (start)
+  updateLiveSeconds(active);
+}
+
+/* animate years/year value in right panel */
+let animFrame = null;
+let animStart = null;
+let animFrom = 0;
+let animTo = 0;
+function animateTotalYear(target){
+  animFrom = Number($("animTotalYear").textContent) || 0;
+  animTo = target;
+  animStart = null;
+  if(animFrame) cancelAnimationFrame(animFrame);
+  animFrame = requestAnimationFrame(stepAnimYear);
+}
+function stepAnimYear(ts){
+  if(animStart === null) animStart = ts;
+  const dur = 700;
+  const t = Math.min(1, (ts - animStart)/dur);
+  const eased = 1 - Math.pow(1 - t, 3);
+  const val = animFrom + (animTo - animFrom)*eased;
+  $("animTotalYear").textContent = formatNumber(val,6);
+  if(t < 1) animFrame = requestAnimationFrame(stepAnimYear);
+  else animFrame = null;
+}
+
+/* initial render and compute */
 renderActivities();
 computeAll();
 
-/* convenience: pressing Enter in newOcc will add the row */
-document.getElementById("newOcc").addEventListener("keydown", (e)=>{ if(e.key === "Enter") $("addBtn").click(); });
+/* make sure canvas redraws on resize */
+let resizeTimer = null;
+window.addEventListener("resize", ()=> { clearTimeout(resizeTimer); resizeTimer = setTimeout(()=> computeAll(), 200); });
 
+/* convenience: Enter key in newOcc adds */
+$("newOcc").addEventListener("keydown", (e)=>{ if(e.key === "Enter") $("addBtn").click(); });
+
+/* final save on unload */
+window.addEventListener("beforeunload", ()=> saveState());
+
+/* done */
 </script>
 </body>
 </html>
